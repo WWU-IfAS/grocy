@@ -19,3 +19,19 @@ Setting('LDAP_BIND_DN', ''); // Example value "CN=grocy_bind_account,OU=service_
 Setting('LDAP_BIND_PW', ''); // Password for the above account
 Setting('LDAP_UID_ATTR', ''); // Windows AD: "sAMAccountName", OpenLDAP: "uid", GLAuth: "cn"
 Setting('LDAP_USER_FILTER', ''); // Example value "(OU=grocy_users)"
+
+Setting('FEATURE_FLAG_CHORES', false);
+Setting('FEATURE_FLAG_TASKS', false);
+Setting('FEATURE_FLAG_BATTERIES', false);
+Setting('FEATURE_FLAG_STOCK_PRODUCT_FREEZING', false);
+
+Setting('DEFAULT_PERMISSIONS', [
+	'STOCK_CONSUME',
+	'STOCK_EDIT', // Needed for undo bookings
+	'STOCK_INVENTORY',
+	'STOCK_OPEN',
+	'STOCK_PURCHASE',
+	'STOCK_TRANSFER',
+	'CALENDAR',
+	'USERS_EDIT_SELF',
+]);
