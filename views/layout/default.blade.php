@@ -360,7 +360,7 @@
 				@endforeach
 
 				<div class="nav-item-divider"></div>
-				<li class="nav-item nav-item-sidebar"
+				<li class="nav-item nav-item-sidebar permission-MASTER_DATA_EDIT"
 					data-toggle="tooltip"
 					data-placement="right"
 					title="{{ $__t('Manage master data') }}">
