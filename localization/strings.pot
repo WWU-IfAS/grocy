@@ -351,9 +351,6 @@ msgstr ""
 msgid "This means %s will be removed from stock"
 msgstr ""
 
-msgid "This means the next execution of this chore is scheduled %s days after the last execution"
-msgstr ""
-
 msgid "Removed %1$s of %2$s from stock"
 msgstr ""
 
@@ -892,9 +889,6 @@ msgstr ""
 msgid "Costs"
 msgstr ""
 
-msgid "Based on the prices of the last purchase per product"
-msgstr ""
-
 msgid "The ingredients listed here result in this amount of servings"
 msgstr ""
 
@@ -1262,16 +1256,27 @@ msgstr ""
 msgid "Assignment type"
 msgstr ""
 
-msgid "This means the next execution of this chore is scheduled 1 day after the last execution"
-msgstr ""
+msgid "This means the next execution of this chore is scheduled %s day after the last execution"
+msgid_plural "This means the next execution of this chore is scheduled %s days after the last execution"
+msgstr[0] ""
+msgstr[1] ""
 
-msgid "This means the next execution of this chore is scheduled 1 day after the last execution, but only for the weekdays selected below"
-msgstr ""
+msgid "This means the next execution of this chore is scheduled %s hour after the last execution"
+msgid_plural "This means the next execution of this chore is scheduled %s hours after the last execution"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "This means the next execution of this chore is scheduled every week on the selected weekdays"
+msgid_plural "This means the next execution of this chore is scheduled every %s weeks on the selected weekdays"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "This means the next execution of this chore is scheduled on the selected day every month"
+msgid_plural "This means the next execution of this chore is scheduled on the selected day every %s months"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "This means the next execution of this chore is not scheduled"
-msgstr ""
-
-msgid "This means the next execution of this chore is scheduled on the below selected day of each month"
 msgstr ""
 
 msgid "This means the next execution of this chore will not be assigned to anyone"
@@ -1438,20 +1443,10 @@ msgstr ""
 msgid "Period interval"
 msgstr ""
 
-msgid "This means the next execution of this chore should only be scheduled every %s days"
-msgstr ""
-
-msgid "This means the next execution of this chore should only be scheduled every %s weeks"
-msgstr ""
-
-msgid "This means the next execution of this chore should only be scheduled every %s months"
-msgstr ""
-
-msgid "This means the next execution of this chore is scheduled 1 year after the last execution"
-msgstr ""
-
-msgid "This means the next execution of this chore should only be scheduled every %s years"
-msgstr ""
+msgid "This means the next execution of this chore is scheduled every year on the same day (based on the start date)"
+msgid_plural "This means the next execution of this chore is scheduled every %s years on the same day (based on the start date)"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Transfer"
 msgstr ""
@@ -1684,13 +1679,7 @@ msgstr ""
 msgid "Edit Barcode"
 msgstr ""
 
-msgid "Not enough in stock (not included in costs), %s ingredient missing"
-msgstr ""
-
-msgid "Based on the prices of the default consume rule which is \"Opened first, then first due first, then first in first out\""
-msgstr ""
-
-msgid "Not enough in stock (not included in costs), %1$s missing, %2$s already on shopping list"
+msgid "Based on the prices of the default consume rule (Opened first, then first due first, then first in first out) for in-stock ingredients and on the last price for missing ones"
 msgstr ""
 
 msgid "Quantity unit stock cannot be changed after first purchase"
@@ -2258,4 +2247,121 @@ msgid "Chore to remove"
 msgstr ""
 
 msgid "After merging, all occurences of this chore will be replaced by the kept chore (means this chore will not exist anymore)"
+msgstr ""
+
+msgid "Due today"
+msgstr ""
+
+msgid "%s task is due to be done today"
+msgid_plural "%s tasks are due to be done today"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%s chore is due to be done today"
+msgid_plural "%s chores are due to be done today"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%s battery is due to be charged today"
+msgid_plural "%s batteries are due to be charged today"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Set to 0 to hide due soon filters/highlighting"
+msgstr ""
+
+msgid "Save & close"
+msgstr ""
+
+msgid "Save & add another task"
+msgstr ""
+
+msgid "Treat opened as out of stock"
+msgstr ""
+
+msgid "When enabled, opened items will be counted as missing for calculating if this product is below its minimum stock amount"
+msgstr ""
+
+msgid "Skipped"
+msgstr ""
+
+msgid "Skip next chore schedule"
+msgstr ""
+
+msgid "Time"
+msgstr ""
+
+msgid "A start date is required"
+msgstr ""
+
+msgid "Start date"
+msgstr ""
+
+msgid "The start date cannot be changed when the chore was once tracked"
+msgstr ""
+
+msgid "Show the recipe list and the recipe side by side"
+msgstr ""
+
+msgid "This means the next execution of this chore is scheduled dynamically based on the past average execution frequency"
+msgstr ""
+
+msgid "Average execution frequency"
+msgstr ""
+
+msgid "ar"
+msgstr ""
+
+msgid "bg_BG"
+msgstr ""
+
+msgid "da_DK"
+msgstr ""
+
+msgid "es_419"
+msgstr ""
+
+msgid "fr_FR"
+msgstr ""
+
+msgid "hi"
+msgstr ""
+
+msgid "hr"
+msgstr ""
+
+msgid "hu_HU"
+msgstr ""
+
+msgid "id"
+msgstr ""
+
+msgid "lv"
+msgstr ""
+
+msgid "nb_NO"
+msgstr ""
+
+msgid "nl_NL"
+msgstr ""
+
+msgid "pl_PL"
+msgstr ""
+
+msgid "pt"
+msgstr ""
+
+msgid "ro_RO"
+msgstr ""
+
+msgid "sr"
+msgstr ""
+
+msgid "sv"
+msgstr ""
+
+msgid "uk"
+msgstr ""
+
+msgid "yue"
 msgstr ""

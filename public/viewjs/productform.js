@@ -142,7 +142,7 @@ $('.save-product-button').on('click', function(e)
 
 if (Grocy.EditMode == "edit")
 {
-	Grocy.Api.Get('objects/stock_log?query[]=product_id=' + Grocy.EditObjectId,
+	Grocy.Api.Get('objects/stock_log?limit=1&query[]=product_id=' + Grocy.EditObjectId,
 		function(productJournalEntries)
 		{
 			if (productJournalEntries.length == 0)
@@ -177,7 +177,7 @@ $('.input-group-qu').on('change', function(e)
 
 	if (factor > 1 || quIdPurchase != quIdStock)
 	{
-		$('#qu-conversion-info').text(__t('This means 1 %1$s purchased will be converted into %2$s %3$s in stock', $("#qu_id_purchase option:selected").text(), (1 * factor).toString(), __n((1 * factor).toString(), $("#qu_id_stock option:selected").text(), $("#qu_id_stock option:selected").data("plural-form"))));
+		$('#qu-conversion-info').text(__t('This means 1 %1$s purchased will be converted into %2$s %3$s in stock', $("#qu_id_purchase option:selected").text(), (1 * factor).toString(), __n((1 * factor).toString(), $("#qu_id_stock option:selected").text(), $("#qu_id_stock option:selected").data("plural-form"), true)));
 		$('#qu-conversion-info').removeClass('d-none');
 	}
 	else
@@ -492,6 +492,11 @@ else if (Grocy.EditMode === 'create')
 	if (Grocy.UserSettings.product_presets_default_due_days.toString() !== '0')
 	{
 		$("#default_best_before_days").val(Grocy.UserSettings.product_presets_default_due_days);
+	}
+
+	if (Grocy.FeatureFlags.GROCY_FEATURE_FLAG_STOCK_PRODUCT_OPENED_TRACKING)
+	{
+		$("#treat_opened_as_out_of_stock").prop("checked", BoolVal(Grocy.UserSettings.product_presets_treat_opened_as_out_of_stock));
 	}
 }
 

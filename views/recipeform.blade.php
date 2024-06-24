@@ -174,6 +174,15 @@
 							</td>
 							<td>
 								@php
+								// The amount can't be non-numeric when using the frontend,
+								// but some users decide to edit the database manually and
+								// enter something like "4 or 5" in the amount column (brilliant)
+								// => So at least don't crash this view by just assuming 0 if that's the case
+								if (!is_numeric($recipePosition->amount))
+								{
+									$recipePosition->amount = 0;
+								}
+								
 								$product = FindObjectInArrayByPropertyValue($products, 'id', $recipePosition->product_id);
 								$productQuConversions = FindAllObjectsInArrayByPropertyValue($quantityUnitConversionsResolved, 'product_id', $product->id);
 								$productQuConversions = FindAllObjectsInArrayByPropertyValue($productQuConversions, 'from_qu_id', $product->qu_id_stock);
@@ -188,7 +197,7 @@
 								@else
 								<span class="locale-number locale-number-quantity-amount">@if($recipePosition->amount == round($recipePosition->amount)){{ round($recipePosition->amount) }}@else{{ $recipePosition->amount }}@endif</span>
 								@endif
-								{{ $__n($recipePosition->amount, FindObjectInArrayByPropertyValue($quantityunits, 'id', $recipePosition->qu_id)->name, FindObjectInArrayByPropertyValue($quantityunits, 'id', $recipePosition->qu_id)->name_plural) }}
+								{{ $__n($recipePosition->amount, FindObjectInArrayByPropertyValue($quantityunits, 'id', $recipePosition->qu_id)->name, FindObjectInArrayByPropertyValue($quantityunits, 'id', $recipePosition->qu_id)->name_plural, true) }}
 
 								@if(!empty($recipePosition->variable_amount))
 								<div class="small text-muted font-italic">{{ $__t('Variable amount') }}</div>
@@ -325,6 +334,37 @@
 				<p id="no-current-recipe-picture-hint"
 					class="form-text text-muted font-italic mb-5">{{ $__t('No picture available') }}</p>
 				@endif
+			</div>
+		</div>
+		
+		<div class="row">
+			<div class="col">
+				<div class="title-related-links">
+					<h4>
+						<span class="ls-n1">{{ $__t('grocycode') }}</span>
+						<i class="fas fa-question-circle text-muted"
+							data-toggle="tooltip"
+							data-trigger="hover click"
+							title="{{ $__t('grocycode is a unique referer to this %s in your grocy instance - print it onto a label and scan it like any other barcode', $__t('Recipe')) }}"></i>
+					</h4>
+					<p>
+						@if($mode == 'edit')
+						<img src="{{ $U('/recipe/' . $recipe->id . '/grocycode?size=60') }}"
+							class="float-lg-left">
+						@endif
+					</p>
+					<p>
+						<a class="btn btn-outline-primary btn-sm"
+							href="{{ $U('/recipe/' . $recipe->id . '/grocycode?download=true') }}">{{ $__t('Download') }}</a>
+						@if(GROCY_FEATURE_FLAG_LABEL_PRINTER)
+						<a class="btn btn-outline-primary btn-sm recipe-grocycode-label-print"
+							data-recipe-id="{{ $recipe->id }}"
+							href="#">
+							{{ $__t('Print on label printer') }}
+						</a>
+						@endif
+					</p>
+				</div>
 			</div>
 		</div>
 	</div>

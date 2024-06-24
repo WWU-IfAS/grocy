@@ -391,8 +391,7 @@
 									"type": "object",
 									"properties": {
 										"created_object_id": {
-											"type": "number",
-											"format": "integer",
+											"type": "integer",
 											"description": "The id of the created object"
 										}
 									}
@@ -764,7 +763,7 @@
 						"required": false,
 						"description": "Only when using `force_serve_as` = `picture`: Downscale the picture to the given height while maintaining the aspect ratio",
 						"schema": {
-							"type": "integer"
+							"type": "number"
 						}
 					},
 					{
@@ -773,7 +772,7 @@
 						"required": false,
 						"description": "Only when using `force_serve_as` = `picture`: Downscale the picture to the given width while maintaining the aspect ratio",
 						"schema": {
-							"type": "integer"
+							"type": "number"
 						}
 					}
 				],
@@ -1480,7 +1479,6 @@
 								"properties": {
 									"amount": {
 										"type": "number",
-										"format": "number",
 										"description": "The amount to add - please note that when tare weight handling for the product is enabled, this needs to be the amount including the container weight (gross), the amount to be posted will be automatically calculated based on what is in stock and the defined tare weight"
 									},
 									"best_before_date": {
@@ -1490,7 +1488,6 @@
 									},
 									"price": {
 										"type": "number",
-										"format": "number",
 										"description": "The price per stock quantity unit in configured currency"
 									},
 									"open": {
@@ -1498,13 +1495,11 @@
 										"description": "If the stock entry was already opened or not"
 									},
 									"location_id": {
-										"type": "number",
-										"format": "integer",
+										"type": "integer",
 										"description": "If omitted, the default location of the product is used"
 									},
 									"shopping_location_id": {
-										"type": "number",
-										"format": "integer",
+										"type": "integer",
 										"description": "If omitted, no store will be affected"
 									},
 									"purchased_date": {
@@ -1891,7 +1886,6 @@
 								"properties": {
 									"amount": {
 										"type": "number",
-										"format": "number",
 										"description": "The amount to add - please note that when tare weight handling for the product is enabled, this needs to be the amount including the container weight (gross), the amount to be posted will be automatically calculated based on what is in stock and the defined tare weight"
 									},
 									"best_before_date": {
@@ -1904,22 +1898,18 @@
 									},
 									"price": {
 										"type": "number",
-										"format": "number",
 										"description": "The price per stock quantity unit in configured currency"
 									},
 									"location_id": {
-										"type": "number",
-										"format": "integer",
+										"type": "integer",
 										"description": "If omitted, the default location of the product is used"
 									},
 									"shopping_location_id": {
-										"type": "number",
-										"format": "integer",
+										"type": "integer",
 										"description": "If omitted, no store will be affected"
 									},
 									"stock_label_type": {
-										"type": "number",
-										"format": "integer",
+										"type": "integer",
 										"description": "`1` = No label, `2` = Single label, `3` = Label per unit"
 									}
 								},
@@ -2000,13 +1990,11 @@
 										"description": "A specific stock entry id to consume, if used, the amount has to be 1"
 									},
 									"recipe_id": {
-										"type": "number",
-										"format": "integer",
+										"type": "integer",
 										"description": "A valid recipe id for which this product was used (for statistical purposes only)"
 									},
 									"location_id": {
-										"type": "number",
-										"format": "integer",
+										"type": "integer",
 										"description": "A valid location id (if supplied, only stock at the given location is considered, if ommitted, stock of any location is considered)"
 									},
 									"exact_amount": {
@@ -2015,7 +2003,7 @@
 									},
 									"allow_subproduct_substitution": {
 										"type": "boolean",
-										"description": "`True` when any in-stock sub product should be used when the given product is a parent product and currently not in-stock"
+										"description": "`true` when any in-stock sub product should be used when the given product is a parent product and currently not in-stock"
 									}
 								},
 								"example": {
@@ -2083,13 +2071,11 @@
 										"description": "The amount to transfer - please note that when tare weight handling for the product is enabled, this needs to be the amount including the container weight (gross), the amount to be posted will be automatically calculated based on what is in stock and the defined tare weight"
 									},
 									"location_id_from": {
-										"type": "number",
-										"format": "integer",
+										"type": "integer",
 										"description": "A valid location id, the location from where the product should be transfered"
 									},
 									"location_id_to": {
-										"type": "number",
-										"format": "integer",
+										"type": "integer",
 										"description": "A valid location id, the location to where the product should be transfered"
 									},
 									"stock_entry_id": {
@@ -2158,7 +2144,7 @@
 								"type": "object",
 								"properties": {
 									"new_amount": {
-										"type": "integer",
+										"type": "number",
 										"description": "The new current amount for the given product - please note that when tare weight handling for the product is enabled, this needs to be the amount including the container weight (gross), the amount to be posted will be automatically calculated based on what is in stock and the defined tare weight"
 									},
 									"best_before_date": {
@@ -2167,19 +2153,20 @@
 										"description": "The due date which applies to added products"
 									},
 									"shopping_location_id": {
-										"type": "number",
-										"format": "integer",
+										"type": "integer",
 										"description": "If omitted, no store will be affected"
 									},
 									"location_id": {
-										"type": "number",
-										"format": "integer",
+										"type": "integer",
 										"description": "If omitted, the default location of the product is used (only applies to added products)"
 									},
 									"price": {
 										"type": "number",
-										"format": "number",
 										"description": "If omitted, the last price of the product is used (only applies to added products)"
+									},
+									"stock_label_type": {
+										"type": "integer",
+										"description": "`1` = No label, `2` = Single label, `3` = Label per unit (only applies to added products)"
 									}
 								}
 							}
@@ -2247,7 +2234,7 @@
 									},
 									"allow_subproduct_substitution": {
 										"type": "boolean",
-										"description": "`True` when any in-stock sub product should be used when the given product is a parent product and currently not in-stock"
+										"description": "`true` when any in-stock sub product should be used when the given product is a parent product and currently not in-stock"
 									}
 								},
 								"example": {
@@ -2436,7 +2423,6 @@
 								"properties": {
 									"amount": {
 										"type": "number",
-										"format": "number",
 										"description": "The amount to add - please note that when tare weight handling for the product is enabled, this needs to be the amount including the container weight (gross), the amount to be posted will be automatically calculated based on what is in stock and the defined tare weight"
 									},
 									"best_before_date": {
@@ -2449,12 +2435,10 @@
 									},
 									"price": {
 										"type": "number",
-										"format": "number",
 										"description": "The price per stock quantity unit in configured currency"
 									},
 									"location_id": {
-										"type": "number",
-										"format": "integer",
+										"type": "integer",
 										"description": "If omitted, the default location of the product is used"
 									}
 								},
@@ -2535,13 +2519,11 @@
 										"description": "A specific stock entry id to consume, if used, the amount has to be 1"
 									},
 									"recipe_id": {
-										"type": "number",
-										"format": "integer",
+										"type": "integer",
 										"description": "A valid recipe id for which this product was used (for statistical purposes only)"
 									},
 									"location_id": {
-										"type": "number",
-										"format": "integer",
+										"type": "integer",
 										"description": "A valid location id (if supplied, only stock at the given location is considered, if ommitted, stock of any location is considered)"
 									},
 									"exact_amount": {
@@ -2550,7 +2532,7 @@
 									},
 									"allow_subproduct_substitution": {
 										"type": "boolean",
-										"description": "`True` when any in-stock sub product should be used when the given product is a parent product and currently not in-stock"
+										"description": "`rue` when any in-stock sub product should be used when the given product is a parent product and currently not in-stock"
 									}
 								},
 								"example": {
@@ -2618,13 +2600,11 @@
 										"description": "The amount to transfer - please note that when tare weight handling for the product is enabled, this needs to be the amount including the container weight (gross), the amount to be posted will be automatically calculated based on what is in stock and the defined tare weight"
 									},
 									"location_id_from": {
-										"type": "number",
-										"format": "integer",
+										"type": "integer",
 										"description": "A valid location id, the location from where the product should be transfered"
 									},
 									"location_id_to": {
-										"type": "number",
-										"format": "integer",
+										"type": "integer",
 										"description": "A valid location id, the location to where the product should be transfered"
 									},
 									"stock_entry_id": {
@@ -2693,7 +2673,7 @@
 								"type": "object",
 								"properties": {
 									"new_amount": {
-										"type": "integer",
+										"type": "number",
 										"description": "The new current amount for the given product - please note that when tare weight handling for the product is enabled, this needs to be the amount including the container weight (gross), the amount to be posted will be automatically calculated based on what is in stock and the defined tare weight"
 									},
 									"best_before_date": {
@@ -2702,13 +2682,11 @@
 										"description": "The due date which applies to added products"
 									},
 									"location_id": {
-										"type": "number",
-										"format": "integer",
+										"type": "integer",
 										"description": "If omitted, the default location of the product is used (only applies to added products)"
 									},
 									"price": {
 										"type": "number",
-										"format": "number",
 										"description": "If omitted, the last price of the product is used (only applies to added products)"
 									}
 								}
@@ -2777,7 +2755,7 @@
 									},
 									"allow_subproduct_substitution": {
 										"type": "boolean",
-										"description": "`True` when any in-stock sub product should be used when the given product is a parent product and currently not in-stock"
+										"description": "`rue` when any in-stock sub product should be used when the given product is a parent product and currently not in-stock"
 									}
 								},
 								"example": {
@@ -2956,10 +2934,15 @@
 									"list_id": {
 										"type": "integer",
 										"description": "The shopping list id to clear, when omitted, the default shopping list (with id 1) is used"
+									},
+									"done_only": {
+										"type": "boolean",
+										"description": "When `true`, only done items will be removed (defaults to `false` when ommited)"
 									}
 								},
 								"example": {
-									"list_id": 2
+									"list_id": 2,
+									"done_only": false
 								}
 							}
 						}
@@ -2998,15 +2981,19 @@
 								"properties": {
 									"product_id": {
 										"type": "integer",
-										"description": "A valid product id of the item on the shopping list"
+										"description": "A valid product id of the product to be added"
+									},
+									"qu_id": {
+										"type": "integer",
+										"description": "A valid quantity unit id (used only for display; the amount needs to be related to the products stock QU), when omitted, the products stock QU is used"
 									},
 									"list_id": {
 										"type": "integer",
 										"description": "A valid shopping list id, when omitted, the default shopping list (with id 1) is used"
 									},
 									"product_amount": {
-										"type": "integer",
-										"description": "The amount of product units to add, when omitted, the default amount of 1 is used"
+										"type": "number",
+										"description": "The amount (related to the products stock QU) to add, when omitted, the default amount of 1 is used"
 									},
 									"note": {
 										"type": "string",
@@ -3063,7 +3050,7 @@
 										"description": "A valid shopping list id, when omitted, the default shopping list (with id 1) is used"
 									},
 									"product_amount": {
-										"type": "integer",
+										"type": "number",
 										"description": "The amount of product units to remove, when omitted, the default amount of 1 is used"
 									}
 								},
@@ -3324,8 +3311,7 @@
 									"excludedProductIds": {
 										"type": "array",
 										"items": {
-											"type": "number",
-											"format": "integer"
+											"type": "integer"
 										},
 										"description": "An optional array of product ids to exclude them from being put on the shopping list"
 									}
@@ -3489,8 +3475,7 @@
 									"type": "object",
 									"properties": {
 										"created_object_id": {
-											"type": "number",
-											"format": "integer",
+											"type": "integer",
 											"description": "The id of the created recipe"
 										}
 									}
@@ -3500,6 +3485,48 @@
 					},
 					"400": {
 						"description": "The operation was not successful (possible errors are: Invalid recipe id)",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Error400"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/recipes/{recipeId}/printlabel": {
+			"get": {
+				"summary": "Prints the grocycode label of the given recipe on the configured label printer",
+				"tags": [
+					"Recipes"
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "recipeId",
+						"required": true,
+						"description": "A valid recipe id",
+						"schema": {
+							"type": "integer"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "The operation was successful",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"description": "WebHook data"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "The operation was not successful (possible errors are: Not existing recipe, error on WebHook execution)",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -3631,6 +3658,11 @@
 									"done_by": {
 										"type": "integer",
 										"description": "A valid user id of who executed this chore, when omitted, the currently authenticated user will be used"
+									},
+									"skipped": {
+										"type": "boolean",
+										"default": false,
+										"description": "`true` when the execution should be tracked as skipped, defaults to `false` when omitted"
 									}
 								}
 							}
@@ -4322,19 +4354,17 @@
 						"type": "integer"
 					},
 					"qu_factor_purchase_to_stock": {
-						"type": "number",
-						"format": "number"
+						"type": "number"
 					},
 					"tare_weight": {
-						"type": "number",
-						"format": "number"
+						"type": "number"
 					},
 					"barcode": {
 						"type": "string",
 						"description": "Can contain multiple barcodes separated by comma"
 					},
 					"min_stock_amount": {
-						"type": "integer",
+						"type": "number",
 						"minimum": 0,
 						"default": 0
 					},
@@ -4356,6 +4386,9 @@
 						"format": "date-time"
 					},
 					"shopping_location_id": {
+						"type": "integer"
+					},
+					"treat_opened_as_out_of_stock": {
 						"type": "integer"
 					},
 					"userfields": {
@@ -4490,7 +4523,7 @@
 						"type": "integer"
 					},
 					"amount": {
-						"type": "integer"
+						"type": "number"
 					},
 					"location_id": {
 						"type": "integer"
@@ -4586,8 +4619,7 @@
 						"type": "integer"
 					},
 					"costs": {
-						"type": "number",
-						"format": "number"
+						"type": "number"
 					}
 				},
 				"example": {
@@ -4622,26 +4654,23 @@
 						"format": "date-time"
 					},
 					"stock_amount": {
-						"type": "integer"
+						"type": "number"
 					},
 					"stock_amount_opened": {
-						"type": "integer"
+						"type": "number"
 					},
 					"next_due_date": {
 						"type": "string",
 						"format": "date-time"
 					},
 					"last_price": {
-						"type": "number",
-						"format": "number"
+						"type": "number"
 					},
 					"avg_price": {
-						"type": "number",
-						"format": "number"
+						"type": "number"
 					},
 					"oldest_price": {
-						"type": "number",
-						"format": "number"
+						"type": "number"
 					},
 					"last_shopping_location_id": {
 						"type": "integer"
@@ -4650,12 +4679,10 @@
 						"$ref": "#/components/schemas/Location"
 					},
 					"average_shelf_life_days": {
-						"type": "number",
-						"format": "integer"
+						"type": "number"
 					},
 					"spoil_rate_percent": {
-						"type": "number",
-						"format": "number"
+						"type": "number"
 					},
 					"has_childs": {
 						"type": "boolean",
@@ -4736,8 +4763,7 @@
 						"format": "date-time"
 					},
 					"price": {
-						"type": "number",
-						"format": "float"
+						"type": "number"
 					},
 					"shopping_location": {
 						"$ref": "#/components/schemas/ShoppingLocation"
@@ -4760,12 +4786,10 @@
 						"type": "integer"
 					},
 					"amount": {
-						"type": "number",
-						"format": "number"
+						"type": "number"
 					},
 					"last_price": {
-						"type": "number",
-						"format": "float"
+						"type": "number"
 					},
 					"note": {
 						"type": "string"
@@ -4788,8 +4812,7 @@
 						"type": "integer"
 					},
 					"qu_factor_purchase_to_stock": {
-						"type": "number",
-						"format": "number"
+						"type": "number"
 					},
 					"barcode": {
 						"type": "string",
@@ -4825,6 +4848,10 @@
 					},
 					"next_execution_assigned_user": {
 						"$ref": "#/components/schemas/UserDto"
+					},
+					"average_execution_frequency_hours": {
+						"type": "integer",
+						"description": "Contains the average past execution frequency in hours or `null`, when the chore was never executed before"
 					}
 				},
 				"example": {
@@ -5080,7 +5107,7 @@
 						"type": "string",
 						"enum": [
 							"manually",
-							"dynamic-regular",
+							"hourly",
 							"daily",
 							"weekly",
 							"monthly"
@@ -5112,6 +5139,10 @@
 					},
 					"next_execution_assigned_to_user_id": {
 						"type": "integer"
+					},
+					"start_date": {
+						"type": "string",
+						"format": "date-time"
 					},
 					"row_created_timestamp": {
 						"type": "string",
@@ -5199,8 +5230,7 @@
 						"format": "date-time"
 					},
 					"amount": {
-						"type": "number",
-						"format": "float"
+						"type": "number"
 					},
 					"location_id": {
 						"type": "integer"
@@ -5253,8 +5283,7 @@
 				"type": "object",
 				"properties": {
 					"amount": {
-						"type": "number",
-						"format": "float"
+						"type": "number"
 					},
 					"user_id": {
 						"type": "integer"
@@ -5624,7 +5653,9 @@
 					"stock",
 					"stock_current_locations",
 					"chores_log",
-					"meal_plan_sections"
+					"meal_plan_sections",
+					"products_last_purchased",
+					"products_average_price"
 				]
 			},
 			"ExposedEntityNoListing": {
@@ -5640,7 +5671,9 @@
 					"api_keys",
 					"stock",
 					"stock_current_locations",
-					"chores_log"
+					"chores_log",
+					"products_last_purchased",
+					"products_average_price"
 				]
 			},
 			"ExposedEntityNoDelete": {
@@ -5649,7 +5682,9 @@
 					"stock_log",
 					"stock",
 					"stock_current_locations",
-					"chores_log"
+					"chores_log",
+					"products_last_purchased",
+					"products_average_price"
 				]
 			},
 			"ExposedEntityEditRequiresAdmin": {

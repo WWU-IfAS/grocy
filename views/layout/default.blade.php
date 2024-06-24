@@ -85,16 +85,15 @@
 	<script>
 		var Grocy = { };
 		Grocy.Components = { };
-		Grocy.Version = '{{ $version }}';
 		Grocy.Mode = '{{ GROCY_MODE }}';
 		Grocy.BaseUrl = '{{ $U('/') }}';
 		Grocy.CurrentUrlRelative = "/" + window.location.href.split('?')[0].replace(Grocy.BaseUrl, "");
 		Grocy.ActiveNav = '@yield('activeNav', '')';
-		Grocy.Culture = '{{ GROCY_LOCALE }}';
 		Grocy.Currency = '{{ GROCY_CURRENCY }}';
 		Grocy.CalendarFirstDayOfWeek = '{{ GROCY_CALENDAR_FIRST_DAY_OF_WEEK }}';
 		Grocy.CalendarShowWeekNumbers = {{ BoolToString(GROCY_CALENDAR_SHOW_WEEK_OF_YEAR) }};
 		Grocy.LocalizationStrings = {!! $LocalizationStrings !!};
+		Grocy.LocalizationStringsQu = {!! $LocalizationStringsQu !!};
 		Grocy.FeatureFlags = {!! json_encode($featureFlags) !!};
 		Grocy.Webhooks = {
 		@if(GROCY_FEATURE_FLAG_LABEL_PRINTER && !GROCY_LABEL_PRINTER_RUN_SERVER)
@@ -132,6 +131,7 @@
 				class="d-none d-sm-inline"></span>
 		</span>
 
+		@if(GROCY_AUTHENTICATED)
 		<button class="navbar-toggler navbar-toggler-right"
 			type="button"
 			data-toggle="collapse"
@@ -139,7 +139,6 @@
 			<span class="navbar-toggler-icon"></span>
 		</button>
 
-		@if(GROCY_AUTHENTICATED)
 		<div id="sidebarResponsive"
 			class="collapse navbar-collapse">
 			<ul class="navbar-nav navbar-sidenav">
@@ -468,7 +467,7 @@
 			</ul>
 
 			<ul class="navbar-nav ml-auto">
-				@if(GROCY_AUTHENTICATED === true && !GROCY_IS_EMBEDDED_INSTALL && !GROCY_DISABLE_AUTH)
+				@if(GROCY_AUTHENTICATED && !GROCY_IS_EMBEDDED_INSTALL && !GROCY_DISABLE_AUTH)
 				<li class="nav-item dropdown">
 					<a class="nav-link dropdown-toggle discrete-link @if(!empty(GROCY_USER_PICTURE_FILE_NAME)) py-0 @endif"
 						href="#"
@@ -497,7 +496,7 @@
 				</li>
 				@endif
 
-				@if(GROCY_AUTHENTICATED === true)
+				@if(GROCY_AUTHENTICATED)
 				<li class="nav-item dropdown">
 					<a class="nav-link dropdown-toggle discrete-link"
 						href="#"
@@ -668,8 +667,8 @@
 	</nav>
 	@endif
 
-	<div class="content-wrapper pt-0">
-		<div class="container-fluid pr-1 pl-md-3 pl-1">
+	<div class="@if(GROCY_AUTHENTICATED) content-wrapper @endif pt-0">
+		<div class="container-fluid @if(GROCY_AUTHENTICATED) pr-1 pl-md-3 pl-1 @endif">
 			<div class="row mb-3">
 				<div id="page-content"
 					class="col content-text">
@@ -697,8 +696,6 @@
 	<script src="{{ $U('/node_modules/datatables.net-rowgroup-bs4/js/rowGroup.bootstrap4.min.js?v=', true) }}{{ $version }}"></script>
 	<script src="{{ $U('/node_modules/datatables.net-select/js/dataTables.select.min.js?v=', true) }}{{ $version }}"></script>
 	<script src="{{ $U('/node_modules/datatables.net-select-bs4/js/select.bootstrap4.min.js?v=', true) }}{{ $version }}"></script>
-	<script src="{{ $U('/node_modules/timeago/jquery.timeago.js?v=', true) }}{{ $version }}"></script>
-	<script src="{{ $U('/node_modules', true) }}/timeago/locales/jquery.timeago.{{ $__t('timeago_locale') }}.js?v={{ $version }}"></script>
 	<script src="{{ $U('/node_modules/toastr/build/toastr.min.js?v=', true) }}{{ $version }}"></script>
 	<script src="{{ $U('/node_modules/tempusdominus-bootstrap-4/build/js/tempusdominus-bootstrap-4.js?v=', true) }}{{ $version }}"></script>
 	<script src="{{ $U('/node_modules/sprintf-js/dist/sprintf.min.js?v=', true) }}{{ $version }}"></script>

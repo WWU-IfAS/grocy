@@ -232,6 +232,7 @@ U = function(relativePath)
 }
 
 Grocy.Translator = new Translator(Grocy.LocalizationStrings);
+Grocy.TranslatorQu = new Translator(Grocy.LocalizationStringsQu);
 __t = function(text, ...placeholderValues)
 {
 	if (Grocy.Mode === "dev")
@@ -245,7 +246,7 @@ __t = function(text, ...placeholderValues)
 
 	return Grocy.Translator.__(text, ...placeholderValues)
 }
-__n = function(number, singularForm, pluralForm)
+__n = function(number, singularForm, pluralForm, isQu = false)
 {
 	if (Grocy.Mode === "dev")
 	{
@@ -256,7 +257,14 @@ __n = function(number, singularForm, pluralForm)
 		}
 	}
 
-	return Grocy.Translator.n__(singularForm, pluralForm, Math.abs(number), Math.abs(number))
+	if (isQu)
+	{
+		return Grocy.TranslatorQu.n__(singularForm, pluralForm, Math.abs(number), Math.abs(number))
+	}
+	else
+	{
+		return Grocy.Translator.n__(singularForm, pluralForm, Math.abs(number), Math.abs(number))
+	}
 }
 
 if (!Grocy.ActiveNav.isEmpty())
@@ -316,7 +324,6 @@ if (window.localStorage.getItem("sidebar_state") === "collapsed")
 	$("#sidenavToggler").click();
 }
 
-$.timeago.settings.allowFuture = true;
 RefreshContextualTimeago = function(rootSelector = "#page-content")
 {
 	$(rootSelector + " time.timeago").each(function()
@@ -352,7 +359,7 @@ RefreshContextualTimeago = function(rootSelector = "#page-content")
 		}
 		else
 		{
-			element.timeago("update", timestamp);
+			element.text(moment(timestamp).fromNow());
 		}
 
 		if (isDateWithoutTime)
@@ -386,6 +393,7 @@ Grocy.FrontendHelpers.ValidateForm = function(formId)
 	if (form.checkValidity() === true)
 	{
 		$(form).find(':submit').removeClass('disabled');
+		$(form).find('.keep-disabled').addClass('disabled');
 	}
 	else
 	{
@@ -433,6 +441,11 @@ Grocy.FrontendHelpers.ShowGenericError = function(message, exception)
 
 Grocy.FrontendHelpers.SaveUserSetting = function(settingsKey, value)
 {
+	if (Grocy.UserSettings[settingsKey] == value)
+	{
+		return;
+	}
+
 	Grocy.UserSettings[settingsKey] = value;
 
 	jsonData = {};
@@ -444,10 +457,7 @@ Grocy.FrontendHelpers.SaveUserSetting = function(settingsKey, value)
 		},
 		function(xhr)
 		{
-			if (!xhr.statusText.isEmpty())
-			{
-				Grocy.FrontendHelpers.ShowGenericError('Error while saving, probably this item already exists', xhr.response)
-			}
+			console.error(xhr);
 		}
 	);
 }
@@ -676,7 +686,23 @@ $(document).on("click", ".easy-link-copy-textbox", function()
 
 $("textarea.wysiwyg-editor").summernote({
 	minHeight: "300px",
-	lang: __t("summernote_locale")
+	lang: __t("summernote_locale"),
+	callbacks: {
+		onImageLinkInsert: function(url)
+		{
+			// Summernote workaround: Make images responsive
+			// By adding the "img-fluid" class to the img tag
+			$img = $('<img>').attr({ src: url, class: "img-fluid" })
+			$(this).summernote("insertNode", $img[0]);
+		}
+	}
+});
+
+// Summernote workaround: Make embeds responsive
+// By wrapping any embeded video in a container with class "embed-responsive"
+$(".note-video-clip").each(function()
+{
+	$(this).parent().html('<div class="embed-responsive embed-responsive-16by9">' + $(this).wrap("<p/>").parent().html() + "</div>");
 });
 
 function LoadImagesLazy()

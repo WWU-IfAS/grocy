@@ -1,6 +1,5 @@
 ﻿var firstRender = true;
 Grocy.IsMealPlanEntryEditAction = false;
-Grocy.MealPlanEntryEditObjectId = -1;
 
 var firstDay = null;
 if (!Grocy.CalendarFirstDayOfWeek.isEmpty())
@@ -20,11 +19,18 @@ $(".calendar").each(function()
 	var isPrimarySection = BoolVal(container.attr("data-primary-section"));
 	var isLastSection = BoolVal(container.attr("data-last-section"));
 
+	var rightButtonList = "agendaWeek,agendaDay,prev,today,next";
+	if ($(window).width() < 768)
+	{
+		var rightButtonList = "prev,today,next";
+	}
+
 	var headerConfig = {
 		"left": "title",
 		"center": "",
-		"right": "prev,today,next"
+		"right": rightButtonList
 	};
+
 	if (!isPrimarySection)
 	{
 		headerConfig = {
@@ -40,7 +46,7 @@ $(".calendar").each(function()
 		"weekNumbers": false,
 		"eventLimit": false,
 		"eventSources": fullcalendarEventSources,
-		"defaultView": ($(window).width() < 768) ? "agendaDay" : "agendaWeek",
+		"defaultView": ($(window).width() < 768 || GetUriParam("days") == "0") ? "agendaDay" : "agendaWeek",
 		"allDayText": sectionName,
 		"allDayHtml": sectionName,
 		"minTime": "00:00:00",
@@ -160,11 +166,11 @@ $(".calendar").each(function()
 				var costsAndCaloriesPerServing = ""
 				if (Grocy.FeatureFlags.GROCY_FEATURE_FLAG_STOCK_PRICE_TRACKING)
 				{
-					costsAndCaloriesPerServing = '<h5 class="small text-truncate mb-1"><span class="locale-number locale-number-currency">' + resolvedRecipe.costs + '</span> / <span class="locale-number locale-number-generic">' + resolvedRecipe.calories + '</span> kcal ' + __t('per serving') + '</h5>';
+					costsAndCaloriesPerServing = '<h5 class="small text-truncate mb-1"><span class="locale-number locale-number-currency">' + resolvedRecipe.costs + '</span> / <span class="locale-number locale-number-generic">' + resolvedRecipe.calories / mealPlanEntry.recipe_servings + '</span> kcal ' + __t('per serving') + '</h5>';
 				}
 				else
 				{
-					costsAndCaloriesPerServing = '<h5 class="small text-truncate mb-1"><span class="locale-number locale-number-generic">' + resolvedRecipe.calories + '</span> kcal ' + __t('per serving') + '</h5>';
+					costsAndCaloriesPerServing = '<h5 class="small text-truncate mb-1"><span class="locale-number locale-number-generic">' + resolvedRecipe.calories / mealPlanEntry.recipe_servings + '</span> kcal ' + __t('per serving') + '</h5>';
 				}
 
 				if (!Grocy.FeatureFlags.GROCY_FEATURE_FLAG_STOCK)
@@ -237,11 +243,11 @@ $(".calendar").each(function()
 				var costsAndCaloriesPerServing = ""
 				if (Grocy.FeatureFlags.GROCY_FEATURE_FLAG_STOCK_PRICE_TRACKING)
 				{
-					costsAndCaloriesPerServing = '<h5 class="small text-truncate mb-1"><span class="locale-number locale-number-currency">' + productDetails.last_price * mealPlanEntry.product_amount + '</span> / <span class="locale-number locale-number-generic">' + productDetails.product.calories * mealPlanEntry.product_amount + '</span> kcal ' + '</h5>';
+					costsAndCaloriesPerServing = '<h5 class="small text-truncate mb-1"><span class="locale-number locale-number-currency">' + productDetails.last_price * mealPlanEntry.product_amount + '</span> / <span class="locale-number locale-number-generic">' + productDetails.product.calories + '</span> kcal ' + '</h5>';
 				}
 				else
 				{
-					costsAndCaloriesPerServing = '<h5 class="small text-truncate mb-1"><span class="locale-number locale-number-generic">' + productDetails.product.calories * mealPlanEntry.product_amount + '</span> kcal ' + '</h5>';
+					costsAndCaloriesPerServing = '<h5 class="small text-truncate mb-1"><span class="locale-number locale-number-generic">' + productDetails.product.calories + '</span> kcal ' + '</h5>';
 				}
 
 				var shoppingListButtonHtml = "";
@@ -253,13 +259,13 @@ $(".calendar").each(function()
 				element.html('\
 				<div> \
 					<h5 class="text-truncate mb-1 cursor-link display-product-button ' + additionalTitleCssClasses + '" data-toggle="tooltip" title="' + __t("Display product") + '" data-product-id="' + productDetails.product.id.toString() + '">' + productDetails.product.name + '</h5> \
-					<h5 class="small text-truncate mb-1"><span class="locale-number locale-number-quantity-amount">' + mealPlanEntry.product_amount + "</span> " + __n(mealPlanEntry.product_amount, productDetails.quantity_unit_stock.name, productDetails.quantity_unit_stock.name_plural) + '</h5> \
+					<h5 class="small text-truncate mb-1"><span class="locale-number locale-number-quantity-amount">' + mealPlanEntry.product_amount + "</span> " + __n(mealPlanEntry.product_amount, productDetails.quantity_unit_stock.name, productDetails.quantity_unit_stock.name_plural, true) + '</h5> \
 					<h5 class="small timeago-contextual text-truncate mb-1">' + fulfillmentIconHtml + " " + fulfillmentInfoHtml + '</h5> \
 					' + costsAndCaloriesPerServing + ' \
 					<h5 class="d-print-none"> \
 						<a class="ml-1 btn btn-outline-danger btn-xs remove-product-button" href="#" data-toggle="tooltip" title="' + __t("Delete this item") + '"><i class="fas fa-trash"></i></a> \
 						<a class="btn btn-outline-info btn-xs edit-meal-plan-entry-button" href="#" data-toggle="tooltip" title="' + __t("Edit this item") + '"><i class="fas fa-edit"></i></a> \
-						<a class="ml-1 btn btn-outline-success btn-xs product-consume-button ' + productConsumeButtonDisabledClasses + '" href="#" data-toggle="tooltip" title="' + __t("Consume %1$s of %2$s", parseFloat(mealPlanEntry.product_amount).toLocaleString() + ' ' + __n(mealPlanEntry.product_amount, productDetails.quantity_unit_stock.name, productDetails.quantity_unit_stock.name_plural), productDetails.product.name) + '" data-product-id="' + productDetails.product.id.toString() + '" data-product-name="' + productDetails.product.name + '" data-product-amount="' + mealPlanEntry.product_amount + '" data-mealplan-entry-id="' + mealPlanEntry.id.toString() + '"><i class="fas fa-utensils"></i></a> \
+						<a class="ml-1 btn btn-outline-success btn-xs product-consume-button ' + productConsumeButtonDisabledClasses + '" href="#" data-toggle="tooltip" title="' + __t("Consume %1$s of %2$s", parseFloat(mealPlanEntry.product_amount).toLocaleString() + ' ' + __n(mealPlanEntry.product_amount, productDetails.quantity_unit_stock.name, productDetails.quantity_unit_stock.name_plural, true), productDetails.product.name) + '" data-product-id="' + productDetails.product.id.toString() + '" data-product-name="' + productDetails.product.name + '" data-product-amount="' + mealPlanEntry.product_amount + '" data-mealplan-entry-id="' + mealPlanEntry.id.toString() + '"><i class="fas fa-utensils"></i></a> \
 						' + shoppingListButtonHtml + ' \
 						' + doneButtonHtml + ' \
 					</h5> \
@@ -310,6 +316,15 @@ $(".calendar").each(function()
 			if (isPrimarySection)
 			{
 				UpdateUriParam("start", view.start.format("YYYY-MM-DD"));
+
+				if (view.name == "agendaDay")
+				{
+					UpdateUriParam("days", "0");
+				}
+				else
+				{
+					RemoveUriParam("days");
+				}
 
 				if (firstRender)
 				{
@@ -417,7 +432,7 @@ $(document).on("click", ".edit-meal-plan-entry-button", function(e)
 		Grocy.FrontendHelpers.ValidateForm("add-note-form");
 	}
 	Grocy.IsMealPlanEntryEditAction = true;
-	Grocy.MealPlanEntryEditObjectId = mealPlanEntry.id;
+	Grocy.MealPlanEntryEditObject = mealPlanEntry;
 });
 
 $(document).on("click", ".copy-day-button", function(e)
@@ -434,6 +449,11 @@ $(document).on("click", ".copy-day-button", function(e)
 
 $("#add-recipe-modal").on("shown.bs.modal", function(e)
 {
+	if (!Grocy.FeatureFlags.GROCY_FEATURE_FLAG_DISABLE_BROWSER_BARCODE_CAMERA_SCANNING)
+	{
+		Grocy.Components.BarcodeScanner.Init();
+	}
+
 	Grocy.Components.RecipePicker.GetInputElement().focus();
 })
 
@@ -444,6 +464,11 @@ $("#add-note-modal").on("shown.bs.modal", function(e)
 
 $("#add-product-modal").on("shown.bs.modal", function(e)
 {
+	if (!Grocy.FeatureFlags.GROCY_FEATURE_FLAG_DISABLE_BROWSER_BARCODE_CAMERA_SCANNING)
+	{
+		Grocy.Components.BarcodeScanner.Init();
+	}
+
 	Grocy.Components.ProductPicker.GetInputElement().focus();
 })
 
@@ -488,7 +513,7 @@ $('#save-add-recipe-button').on('click', function(e)
 
 	if (Grocy.IsMealPlanEntryEditAction)
 	{
-		Grocy.Api.Put('objects/meal_plan/' + Grocy.MealPlanEntryEditObjectId.toString(), formData,
+		Grocy.Api.Put('objects/meal_plan/' + Grocy.MealPlanEntryEditObject.id, formData,
 			function(result)
 			{
 				window.location.reload();
@@ -535,7 +560,7 @@ $('#save-add-note-button').on('click', function(e)
 
 	if (Grocy.IsMealPlanEntryEditAction)
 	{
-		Grocy.Api.Put('objects/meal_plan/' + Grocy.MealPlanEntryEditObjectId.toString(), jsonData,
+		Grocy.Api.Put('objects/meal_plan/' + Grocy.MealPlanEntryEditObject.id, jsonData,
 			function(result)
 			{
 				window.location.reload();
@@ -588,7 +613,7 @@ $('#save-add-product-button').on('click', function(e)
 
 	if (Grocy.IsMealPlanEntryEditAction)
 	{
-		Grocy.Api.Put('objects/meal_plan/' + Grocy.MealPlanEntryEditObjectId.toString(), jsonData,
+		Grocy.Api.Put('objects/meal_plan/' + Grocy.MealPlanEntryEditObject.id, jsonData,
 			function(result)
 			{
 				window.location.reload();
@@ -801,7 +826,7 @@ $(document).on('click', '.product-consume-button', function(e)
 			Grocy.Api.Get('stock/products/' + productId,
 				function(result)
 				{
-					var toastMessage = __t('Removed %1$s of %2$s from stock', consumeAmount.toString() + " " + __n(consumeAmount, result.quantity_unit_stock.name, result.quantity_unit_stock.name_plural), result.product.name) + '<br><a class="btn btn-secondary btn-sm mt-2" href="#" onclick="UndoStockTransaction(\'' + bookingResponse[0].transaction_id + '\')"><i class="fas fa-undo"></i> ' + __t("Undo") + '</a>';
+					var toastMessage = __t('Removed %1$s of %2$s from stock', consumeAmount.toString() + " " + __n(consumeAmount, result.quantity_unit_stock.name, result.quantity_unit_stock.name_plural, true), result.product.name) + '<br><a class="btn btn-secondary btn-sm mt-2" href="#" onclick="UndoStockTransaction(\'' + bookingResponse[0].transaction_id + '\')"><i class="fas fa-undo"></i> ' + __t("Undo") + '</a>';
 
 					Grocy.Api.Put('objects/meal_plan/' + mealPlanEntryId, { "done": 1 },
 						function(result)
@@ -1006,7 +1031,15 @@ Grocy.Components.ProductPicker.GetPicker().on('change', function(e)
 				Grocy.Components.ProductAmountPicker.Reload(productDetails.product.id, productDetails.quantity_unit_stock.id);
 				Grocy.Components.ProductAmountPicker.SetQuantityUnit(productDetails.quantity_unit_stock.id);
 
-				$('#display_amount').val(1);
+				if (Grocy.IsMealPlanEntryEditAction)
+				{
+					$('#display_amount').val(Grocy.MealPlanEntryEditObject.product_amount);
+				}
+				else
+				{
+					$('#display_amount').val(1);
+				}
+
 				RefreshLocaleNumberInput();
 				$('#display_amount').focus();
 				$('#display_amount').select();

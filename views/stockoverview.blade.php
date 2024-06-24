@@ -50,16 +50,16 @@
 		</div>
 		<div class="border-top border-bottom my-2 py-1">
 			@if (GROCY_FEATURE_FLAG_STOCK_BEST_BEFORE_DATE_TRACKING)
+			<div id="info-expired-products"
+				data-status-filter="expired"
+				class="error-message status-filter-message responsive-button mr-2"></div>
+			<div id="info-overdue-products"
+				data-status-filter="overdue"
+				class="secondary-message status-filter-message responsive-button mr-2"></div>
 			<div id="info-duesoon-products"
 				data-next-x-days="{{ $nextXDays }}"
 				data-status-filter="duesoon"
 				class="warning-message status-filter-message responsive-button mr-2"></div>
-			<div id="info-overdue-products"
-				data-status-filter="overdue"
-				class="secondary-message status-filter-message responsive-button mr-2"></div>
-			<div id="info-expired-products"
-				data-status-filter="expired"
-				class="error-message status-filter-message responsive-button mr-2"></div>
 			@endif
 			<div id="info-missing-products"
 				data-status-filter="belowminstockamount"
@@ -297,7 +297,7 @@
 									<span class="dropdown-item-text">{{ $__t('Edit product') }}</span>
 								</a>
 								<div class="dropdown-divider"></div>
-								<a class="dropdown-item stockentry-grocycode-link"
+								<a class="dropdown-item"
 									type="button"
 									href="{{ $U('/product/' . $currentStockEntry->product_id . '/grocycode?download=true') }}">
 									{!! str_replace('grocycode', '<span class="ls-n1">grocycode</span>', $__t('Download %s grocycode', $__t('Product'))) !!}
@@ -329,7 +329,7 @@
 						@if($currentStockEntry->is_aggregated_amount == 1)
 						<span class="pl-1 text-secondary">
 							<i class="fas fa-custom-sigma-sign"></i> <span id="product-{{ $currentStockEntry->product_id }}-amount-aggregated"
-								class="locale-number locale-number-quantity-amount">{{ $currentStockEntry->amount_aggregated }}</span> {{ $__n($currentStockEntry->amount_aggregated, $currentStockEntry->qu_unit_name, $currentStockEntry->qu_unit_name_plural) }}
+								class="locale-number locale-number-quantity-amount">{{ $currentStockEntry->amount_aggregated }}</span> {{ $__n($currentStockEntry->amount_aggregated, $currentStockEntry->qu_unit_name, $currentStockEntry->qu_unit_name_plural, true) }}
 							@if($currentStockEntry->amount_opened_aggregated > 0)<span id="product-{{ $currentStockEntry->product_id }}-opened-amount-aggregated"
 								class="small font-italic">{{ $__t('%s opened', $currentStockEntry->amount_opened_aggregated) }}</span>@endif
 						</span>
@@ -352,7 +352,7 @@
 						<span id="product-{{ $currentStockEntry->product_id }}-next-due-date">{{ $currentStockEntry->best_before_date }}</span>
 						<time id="product-{{ $currentStockEntry->product_id }}-next-due-date-timeago"
 							class="timeago timeago-contextual"
-							datetime="{{ $currentStockEntry->best_before_date }} 23:59:59"></time>
+							@if(!empty($currentStockEntry->best_before_date)) datetime="{{ $currentStockEntry->best_before_date }} 23:59:59" @endif></time>
 					</td>
 					<td class="d-none">
 						@foreach(FindAllObjectsInArrayByPropertyValue($currentStockLocations, 'product_id', $currentStockEntry->product_id) as $locationsForProduct)
@@ -400,7 +400,7 @@
 						<span class="locale-number locale-number-quantity-amount">{{ $currentStockEntry->min_stock_amount }}</span>
 					</td>
 					<td>
-						{{ $currentStockEntry->product_description }}
+						{!! $currentStockEntry->product_description !!}
 					</td>
 					<td class="product-name-cell cursor-link"
 						data-product-id="{{ $currentStockEntry->parent_product_id }}">

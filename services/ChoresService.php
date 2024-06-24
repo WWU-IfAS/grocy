@@ -12,9 +12,9 @@ class ChoresService extends BaseService
 
 	const CHORE_ASSIGNMENT_TYPE_WHO_LEAST_DID_FIRST = 'who-least-did-first';
 
-	const CHORE_PERIOD_TYPE_DAILY = 'daily';
+	const CHORE_PERIOD_TYPE_HOURLY = 'hourly';
 
-	const CHORE_PERIOD_TYPE_DYNAMIC_REGULAR = 'dynamic-regular';
+	const CHORE_PERIOD_TYPE_DAILY = 'daily';
 
 	const CHORE_PERIOD_TYPE_MANUALLY = 'manually';
 
@@ -23,6 +23,8 @@ class ChoresService extends BaseService
 	const CHORE_PERIOD_TYPE_WEEKLY = 'weekly';
 
 	const CHORE_PERIOD_TYPE_YEARLY = 'yearly';
+
+	const CHORE_PERIOD_TYPE_ADAPTIVE = 'adaptive';
 
 	public function CalculateNextExecutionAssignment($choreId)
 	{
@@ -110,9 +112,10 @@ class ChoresService extends BaseService
 		$users = $this->getUsersService()->GetUsersAsDto();
 
 		$chore = $this->getDatabase()->chores($choreId);
-		$choreTrackedCount = $this->getDatabase()->chores_log()->where('chore_id = :1 AND undone = 0', $choreId)->count();
-		$choreLastTrackedTime = $this->getDatabase()->chores_log()->where('chore_id = :1 AND undone = 0', $choreId)->max('tracked_time');
+		$choreTrackedCount = $this->getDatabase()->chores_log()->where('chore_id = :1 AND undone = 0 AND skipped = 0', $choreId)->count();
+		$choreLastTrackedTime = $this->getDatabase()->chores_log()->where('chore_id = :1 AND undone = 0 AND skipped = 0', $choreId)->max('tracked_time');
 		$nextExecutionTime = $this->getDatabase()->chores_current()->where('chore_id', $choreId)->min('next_estimated_execution_time');
+		$averageExecutionFrequency = $this->getDatabase()->chores_execution_average_frequency()->where('chore_id', $choreId)->min('average_frequency_hours');
 
 		$lastChoreLogRow = $this->getDatabase()->chores_log()->where('chore_id = :1 AND tracked_time = :2 AND undone = 0', $choreId, $choreLastTrackedTime)->fetch();
 		$lastDoneByUser = null;
@@ -133,7 +136,8 @@ class ChoresService extends BaseService
 			'tracked_count' => $choreTrackedCount,
 			'last_done_by' => $lastDoneByUser,
 			'next_estimated_execution_time' => $nextExecutionTime,
-			'next_execution_assigned_user' => $nextExecutionAssignedUser
+			'next_execution_assigned_user' => $nextExecutionAssignedUser,
+			'average_execution_frequency_hours' => $averageExecutionFrequency
 		];
 	}
 
@@ -157,7 +161,7 @@ class ChoresService extends BaseService
 		return $chores;
 	}
 
-	public function TrackChore(int $choreId, string $trackedTime, $doneBy = GROCY_USER_ID)
+	public function TrackChore(int $choreId, string $trackedTime, $doneBy = GROCY_USER_ID, $skipped = false)
 	{
 		if (!$this->ChoreExists($choreId))
 		{
@@ -176,10 +180,21 @@ class ChoresService extends BaseService
 			$trackedTime = substr($trackedTime, 0, 10) . ' 00:00:00';
 		}
 
+		if ($skipped)
+		{
+			if ($chore->period_type == self::CHORE_PERIOD_TYPE_MANUALLY)
+			{
+				throw new \Exception('Chores without a schedule can\'t be skipped');
+			}
+
+			$trackedTime = $this->getDatabase()->chores_current()->where('chore_id', $choreId)->min('next_estimated_execution_time');
+		}
+
 		$logRow = $this->getDatabase()->chores_log()->createRow([
 			'chore_id' => $choreId,
 			'tracked_time' => $trackedTime,
-			'done_by_user_id' => $doneBy
+			'done_by_user_id' => $doneBy,
+			'skipped' => BoolToInt($skipped)
 		]);
 		$logRow->save();
 		$lastInsertId = $this->getDatabase()->lastInsertId();

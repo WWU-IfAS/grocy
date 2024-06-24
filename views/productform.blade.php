@@ -160,7 +160,7 @@
 			'additionalCssClasses' => 'locale-number-input locale-number-quantity-amount'
 			))
 
-			<div class="form-group">
+			<div class="form-group @if(GROCY_FEATURE_FLAG_STOCK_PRODUCT_OPENED_TRACKING) mb-1 @endif">
 				<div class="custom-control custom-checkbox">
 					<input @if($mode=='edit'
 						&&
@@ -174,6 +174,22 @@
 					</label>
 				</div>
 			</div>
+
+			@if(GROCY_FEATURE_FLAG_STOCK_PRODUCT_OPENED_TRACKING)
+			<div class="form-group">
+				<div class="custom-control custom-checkbox">
+					<input @if($mode=='edit'
+						&&
+						$product->treat_opened_as_out_of_stock == 1) checked @endif class="form-check-input custom-control-input" type="checkbox" id="treat_opened_as_out_of_stock" name="treat_opened_as_out_of_stock" value="1">
+					<label class="form-check-label custom-control-label"
+						for="treat_opened_as_out_of_stock">{{ $__t('Treat opened as out of stock') }}&nbsp;<i class="fas fa-question-circle text-muted"
+							data-toggle="tooltip"
+							data-trigger="hover click"
+							title="{{ $__t('When enabled, opened items will be counted as missing for calculating if this product is below its minimum stock amount') }}"></i>
+					</label>
+				</div>
+			</div>
+			@endif
 
 			@if(GROCY_FEATURE_FLAG_STOCK_BEST_BEFORE_DATE_TRACKING)
 			<div class="form-group">
@@ -717,7 +733,7 @@
 								@endif
 							</td>
 							<td class="font-italic">
-								{!! $__t('This means 1 %1$s is the same as %2$s %3$s', FindObjectInArrayByPropertyValue($quantityunits, 'id', $quConversion->from_qu_id)->name, '<span class="locale-number locale-number-quantity-amount">' . $quConversion->factor . '</span>', $__n($quConversion->factor, FindObjectInArrayByPropertyValue($quantityunits, 'id', $quConversion->to_qu_id)->name, FindObjectInArrayByPropertyValue($quantityunits, 'id', $quConversion->to_qu_id)->name_plural)) !!}
+								{!! $__t('This means 1 %1$s is the same as %2$s %3$s', FindObjectInArrayByPropertyValue($quantityunits, 'id', $quConversion->from_qu_id)->name, '<span class="locale-number locale-number-quantity-amount">' . $quConversion->factor . '</span>', $__n($quConversion->factor, FindObjectInArrayByPropertyValue($quantityunits, 'id', $quConversion->to_qu_id)->name, FindObjectInArrayByPropertyValue($quantityunits, 'id', $quConversion->to_qu_id)->name_plural, true)) !!}
 							</td>
 						</tr>
 						@endif

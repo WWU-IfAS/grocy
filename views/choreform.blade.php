@@ -66,11 +66,7 @@
 			</div>
 
 			<div class="form-group">
-				<label for="period_type">{{ $__t('Period type') }}&nbsp;<i id="chore-period-type-info"
-						class="fas fa-question-circle text-muted"
-						data-toggle="tooltip"
-						data-trigger="hover click"
-						title=""></i></label>
+				<label for="period_type">{{ $__t('Period type') }}</label>
 				<select required
 					class="custom-control custom-select input-group-chore-period-type"
 					id="period_type"
@@ -91,7 +87,7 @@
 			'value' => $value,
 			'min' => '0',
 			'additionalCssClasses' => 'input-group-chore-period-type',
-			'additionalGroupCssClasses' => 'period-type-input period-type-dynamic-regular period-type-monthly'
+			'additionalGroupCssClasses' => 'period-type-input period-type-monthly'
 			))
 
 			<div class="form-group period-type-input period-type-weekly">
@@ -165,17 +161,34 @@
 			'value' => $value,
 			'min' => '1',
 			'additionalCssClasses' => 'input-group-chore-period-type',
-			'additionalGroupCssClasses' => 'period-type-input period-type-daily period-type-weekly period-type-monthly period-type-yearly',
-			'hintId' => 'chore-period-interval-info'
+			'additionalGroupCssClasses' => 'period-type-input period-type-hourly period-type-daily period-type-weekly period-type-monthly period-type-yearly'
+			))
+
+			<p id="chore-schedule-info"
+				class="form-text text-info mt-n2"></p>
+
+			@php
+			$value = date('Y-m-d H:i:s');
+			if ($mode == 'edit')
+			{
+			$value = date('Y-m-d', strtotime($chore->start_date));
+			}
+			@endphp
+			@include('components.datetimepicker', array(
+			'id' => 'start',
+			'label' => 'Start date',
+			'initialValue' => $value,
+			'format' => 'YYYY-MM-DD HH:mm:ss',
+			'initWithNow' => true,
+			'limitEndToNow' => false,
+			'limitStartToNow' => false,
+			'invalidFeedback' => $__t('A start date is required'),
+			'hint' => $__t('The start date cannot be changed when the chore was once tracked')
 			))
 
 			@if(GROCY_FEATURE_FLAG_CHORES_ASSIGNMENTS)
 			<div class="form-group">
-				<label for="assignment_type">{{ $__t('Assignment type') }} <i id="chore-assignment-type-info"
-						class="fas fa-question-circle text-muted"
-						data-toggle="tooltip"
-						data-trigger="hover click"
-						title=""></i></label>
+				<label for="assignment_type">{{ $__t('Assignment type') }}</label>
 				<select required
 					class="custom-control custom-select input-group-chore-assignment-type"
 					id="assignment_type"
@@ -206,6 +219,9 @@
 				</select>
 				<div class="invalid-feedback">{{ $__t('This assignment type requires that at least one is assigned') }}</div>
 			</div>
+
+			<p id="chore-assignment-type-info"
+				class="form-text text-info mt-n2"></p>
 			@else
 			<input type="hidden"
 				id="assignment_type"

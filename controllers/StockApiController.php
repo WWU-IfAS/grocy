@@ -233,13 +233,18 @@ class StockApiController extends BaseApiController
 			$requestBody = $this->GetParsedAndFilteredRequestBody($request);
 
 			$listId = 1;
-
 			if (array_key_exists('list_id', $requestBody) && !empty($requestBody['list_id']) && is_numeric($requestBody['list_id']))
 			{
 				$listId = intval($requestBody['list_id']);
 			}
 
-			$this->getStockService()->ClearShoppingList($listId);
+			$doneOnly = false;
+			if (array_key_exists('done_only', $requestBody) && filter_var($requestBody['done_only'], FILTER_VALIDATE_BOOLEAN) !== false)
+			{
+				$doneOnly = boolval($requestBody['done_only']);
+			}
+
+			$this->getStockService()->ClearShoppingList($listId, $doneOnly);
 			return $this->EmptyApiResponse($response);
 		}
 		catch (\Exception $ex)
@@ -495,7 +500,13 @@ class StockApiController extends BaseApiController
 				$shoppingLocationId = $requestBody['shopping_location_id'];
 			}
 
-			$transactionId = $this->getStockService()->InventoryProduct($args['productId'], $requestBody['new_amount'], $bestBeforeDate, $locationId, $price, $shoppingLocationId, $purchasedDate);
+			$stockLabelType = 0;
+			if (array_key_exists('stock_label_type', $requestBody) && is_numeric($requestBody['stock_label_type']))
+			{
+				$stockLabelType = intval($requestBody['stock_label_type']);
+			}
+
+			$transactionId = $this->getStockService()->InventoryProduct($args['productId'], $requestBody['new_amount'], $bestBeforeDate, $locationId, $price, $shoppingLocationId, $purchasedDate, $stockLabelType);
 			$args['transactionId'] = $transactionId;
 			return $this->StockTransactions($request, $response, $args);
 		}

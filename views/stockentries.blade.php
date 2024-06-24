@@ -201,7 +201,7 @@
 									{{ $__t('Edit product') }}
 								</a>
 								<div class="dropdown-divider"></div>
-								<a class="dropdown-item stockentry-grocycode-link"
+								<a class="dropdown-item"
 									type="button"
 									href="{{ $U('/stockentry/' . $stockEntry->id . '/grocycode?download=true') }}">
 									{!! str_replace('grocycode', '<span class="ls-n1">grocycode</span>', $__t('Download %s grocycode', $__t('Stock entry'))) !!}
@@ -231,9 +231,9 @@
 						data-product-id="{{ $stockEntry->product_id }}">
 						{{ FindObjectInArrayByPropertyValue($products, 'id', $stockEntry->product_id)->name }}
 					</td>
-					<td>
+					<td data-order="{{ $stockEntry->amount }}">
 						<span id="stock-{{ $stockEntry->id }}-amount"
-							class="locale-number locale-number-quantity-amount">{{ $stockEntry->amount }}</span> <span id="product-{{ $stockEntry->product_id }}-qu-name">{{ $__n($stockEntry->amount, FindObjectInArrayByPropertyValue($quantityunits, 'id', FindObjectInArrayByPropertyValue($products, 'id', $stockEntry->product_id)->qu_id_stock)->name, FindObjectInArrayByPropertyValue($quantityunits, 'id', FindObjectInArrayByPropertyValue($products, 'id', $stockEntry->product_id)->qu_id_stock)->name_plural) }}</span>
+							class="locale-number locale-number-quantity-amount">{{ $stockEntry->amount }}</span> <span id="product-{{ $stockEntry->product_id }}-qu-name">{{ $__n($stockEntry->amount, FindObjectInArrayByPropertyValue($quantityunits, 'id', FindObjectInArrayByPropertyValue($products, 'id', $stockEntry->product_id)->qu_id_stock)->name, FindObjectInArrayByPropertyValue($quantityunits, 'id', FindObjectInArrayByPropertyValue($products, 'id', $stockEntry->product_id)->qu_id_stock)->name_plural, true) }}</span>
 						<span id="stock-{{ $stockEntry->id }}-opened-amount"
 							class="small font-italic">@if($stockEntry->open == 1){{ $__t('Opened') }}@endif</span>
 					</td>
@@ -241,7 +241,7 @@
 						<span id="stock-{{ $stockEntry->id }}-due-date">{{ $stockEntry->best_before_date }}</span>
 						<time id="stock-{{ $stockEntry->id }}-due-date-timeago"
 							class="timeago timeago-contextual"
-							datetime="{{ $stockEntry->best_before_date }} 23:59:59"></time>
+							@if($stockEntry->best_before_date != "") datetime="{{ $stockEntry->best_before_date }} 23:59:59" @endif></time>
 					</td>
 					<td id="stock-{{ $stockEntry->id }}-location"
 						class="@if(!GROCY_FEATURE_FLAG_STOCK_LOCATION_TRACKING) d-none @endif"
@@ -265,7 +265,7 @@
 						<span id="stock-{{ $stockEntry->id }}-purchased-date">{{ $stockEntry->purchased_date }}</span>
 						<time id="stock-{{ $stockEntry->id }}-purchased-date-timeago"
 							class="timeago timeago-contextual"
-							datetime="{{ $stockEntry->purchased_date }} 23:59:59"></time>
+							@if(!empty($stockEntry->purchased_date)) datetime="{{ $stockEntry->purchased_date }} 23:59:59" @endif></time>
 					</td>
 					<td class="d-none">{{ $stockEntry->purchased_date }}</td>
 					<td>

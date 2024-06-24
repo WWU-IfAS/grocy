@@ -202,3 +202,13 @@ function CleanFileName(fileName)
 	// Umlaute seem to cause problems on Linux...
 	return fileName.toLowerCase().replaceAll(/ä/g, 'ae').replaceAll(/ö/g, 'oe').replaceAll(/ü/g, 'ue').replaceAll(/ß/g, 'ss');
 }
+
+function nl2br(s)
+{
+	if (s == null || s === undefined)
+	{
+		return "";
+	}
+
+	return s.replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, "$1<br>$2");
+}

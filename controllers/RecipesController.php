@@ -3,9 +3,12 @@
 namespace Grocy\Controllers;
 
 use Grocy\Services\RecipesService;
+use Grocy\Helpers\Grocycode;
 
 class RecipesController extends BaseController
 {
+	use GrocycodeTrait;
+
 	public function MealPlan(\Psr\Http\Message\ServerRequestInterface $request, \Psr\Http\Message\ResponseInterface $response, array $args)
 	{
 		$start = date('Y-m-d');
@@ -56,7 +59,7 @@ class RecipesController extends BaseController
 			'fullcalendarEventSources' => $events,
 			'recipes' => $recipes,
 			'internalRecipes' => $this->getDatabase()->recipes()->where("id IN (SELECT recipe_id FROM meal_plan_internal_recipe_relation WHERE $mealPlanWhereTimespan)")->fetchAll(),
-			'recipesResolved' => $this->getRecipesService()->GetRecipesResolved2("recipe_id IN (SELECT recipe_id FROM meal_plan_internal_recipe_relation WHERE $mealPlanWhereTimespan)"),
+			'recipesResolved' => $this->getRecipesService()->GetRecipesResolved("recipe_id IN (SELECT recipe_id FROM meal_plan_internal_recipe_relation WHERE $mealPlanWhereTimespan)"),
 			'products' => $this->getDatabase()->products()->orderBy('name', 'COLLATE NOCASE'),
 			'quantityUnits' => $this->getDatabase()->quantity_units()->orderBy('name', 'COLLATE NOCASE'),
 			'quantityUnitConversionsResolved' => $this->getDatabase()->quantity_unit_conversions_resolved(),
@@ -71,7 +74,6 @@ class RecipesController extends BaseController
 		$recipesResolved = $this->getRecipesService()->GetRecipesResolved('recipe_id > 0');
 
 		$selectedRecipe = null;
-
 		if (isset($request->getQueryParams()['recipe']))
 		{
 			$selectedRecipe = $this->getDatabase()->recipes($request->getQueryParams()['recipe']);
@@ -96,7 +98,7 @@ class RecipesController extends BaseController
 		$renderArray = [
 			'recipes' => $recipes,
 			'recipesResolved' => $recipesResolved,
-			'recipePositionsResolved' => $this->getDatabase()->recipes_pos_resolved()->where('recipe_type', RecipesService::RECIPE_TYPE_NORMAL),
+			'recipePositionsResolved' => $this->getDatabase()->recipes_pos_resolved()->where('recipe_id', $selectedRecipe->id),
 			'selectedRecipe' => $selectedRecipe,
 			'products' => $this->getDatabase()->products(),
 			'quantityUnits' => $this->getDatabase()->quantity_units(),
@@ -153,8 +155,6 @@ class RecipesController extends BaseController
 			'mode' => $recipeId == 'new' ? 'create' : 'edit',
 			'products' => $this->getDatabase()->products()->orderBy('name', 'COLLATE NOCASE'),
 			'quantityunits' => $this->getDatabase()->quantity_units(),
-			'recipePositionsResolved' => $this->getRecipesService()->GetRecipesPosResolved(),
-			'recipesResolved' => $this->getRecipesService()->GetRecipesResolved(),
 			'recipes' => $this->getDatabase()->recipes()->where('type', RecipesService::RECIPE_TYPE_NORMAL)->orderBy('name', 'COLLATE NOCASE'),
 			'recipeNestings' => $this->getDatabase()->recipes_nestings()->where('recipe_id', $recipeId),
 			'userfields' => $this->getUserfieldsService()->GetFields('recipes'),
@@ -215,5 +215,11 @@ class RecipesController extends BaseController
 		return $this->renderPage($response, 'mealplansections', [
 			'mealplanSections' => $this->getDatabase()->meal_plan_sections()->where('id > 0')->orderBy('sort_number')
 		]);
+	}
+
+	public function RecipeGrocycodeImage(\Psr\Http\Message\ServerRequestInterface $request, \Psr\Http\Message\ResponseInterface $response, array $args)
+	{
+		$gc = new Grocycode(Grocycode::RECIPE, $args['recipeId']);
+		return $this->ServeGrocycodeImage($request, $response, $gc);
 	}
 }
